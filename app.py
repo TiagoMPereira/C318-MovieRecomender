@@ -26,7 +26,7 @@ def run():
     user_input = None
 
     with st.form("my_form"):
-        st.write("Movies Recommendation")
+        st.write("Recomendador de filmes")
 
         # Create three columns for the select boxes
         col1, col2, col3 = st.columns(3)
@@ -45,7 +45,7 @@ def run():
         col4, col5 = st.columns(2)
 
         with col4:
-            runtime = st.slider("Duração", min_value=30, max_value=210, value=60)
+            runtime = st.slider("Duração (min)", min_value=30, max_value=210, value=60)
 
         with col5:
             release = st.slider("Ano de lançamento", min_value=1906, max_value=2017, value=1990)
@@ -60,7 +60,7 @@ def run():
             st.text("")  # Placeholder for centering
             st.text("")  # Placeholder for centering
             # Place the submit button
-            submitted = st.form_submit_button("Submit")
+            submitted = st.form_submit_button("Recomendar")
 
             # Initialize recommended inside the if block
             if submitted:
@@ -86,10 +86,11 @@ def run():
                     <div style="border: 2px solid #e1e1e1; padding: 10px; border-radius: 5px; margin-top: 20px;">
                         <h3>{i + 1}: {recommended.loc[recommended.index[i], "title"]}</h3>
                         <ul>
-                            <li><b>Release Year:</b> {recommended.loc[recommended.index[i], "release_year"]}</li>
-                            <li><b>Overview:</b> {recommended.loc[recommended.index[i], "overview"]}</li>
-                            <li><b>Genres:</b> {recommended.loc[recommended.index[i], "genres"]}</li>
-                            <li><b>Original Language:</b> {recommended.loc[recommended.index[i], "original_language"]}</li>
+                            <li><b>Ano de lançamento:</b> {recommended.loc[recommended.index[i], "release_year"]}</li>
+                            <li><b>Resumo:</b> {recommended.loc[recommended.index[i], "overview"]}</li>
+                            <li><b>Gêneros:</b> {recommended.loc[recommended.index[i], "genres"]}</li>
+                            <li><b>Idioma original:</b> {recommended.loc[recommended.index[i], "original_language"]}</li>
+                            <li><b>Duração (min):</b> {recommended.loc[recommended.index[i], "runtime"]}</li>
                         </ul>
                     </div>
                     """, unsafe_allow_html=True
@@ -106,7 +107,7 @@ def run():
                     """, unsafe_allow_html=True
                 )
             importance = get_importance(model, user_input)
-            st.write("Importância das variáveis")
+            st.write("Importância das variáveis (Quanto menor, maior o impacto)")
             plot_heatmap(pd.DataFrame(importance).T)
 
 def plot_heatmap(df):
@@ -135,42 +136,48 @@ def get_importance(model: MovieModel, input_: InputPredict):
             # Genre 1
             movie_input.genre1 = None
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["genre1"] = round(score, 3)
             movie_input.genre1 = input_.genre1
 
             # Genre 2
             movie_input.genre2 = None
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["genre2"] = round(score, 3)
             movie_input.genre2 = input_.genre2
 
             # Genre 3
             movie_input.genre3 = None
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["genre3"] = round(score, 3)
             movie_input.genre3 = input_.genre3
 
             # Release year
             movie_input.release_year = 0
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["release_year"] = round(score, 3)
             movie_input.release_year = input_.release_year
 
             # Runtime
             movie_input.runtime = 0
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["runtime"] = round(score, 3)
             movie_input.runtime = input_.runtime
 
             # Language
             movie_input.language = None
             pred = model.predict(movie_input, n_predictions=50000)
-            score = np.sqrt(default_score**2 + pred.loc[pred.index == movie_id, "probability"].values[0]**2)
+            score = np.abs(default_score - pred.loc[pred.index == movie_id, "probability"].values[0])
+
             explanation["language"] = round(score, 3)
             movie_input.language = input_.language
 
