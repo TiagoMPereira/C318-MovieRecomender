@@ -1,1 +1,3 @@
 # C318-MovieRecomender
+
+Este projeto de inteligência artificial visa desenvolver um sistema de recomendação de filmes personalizado, utilizando técnicas avançadas de aprendizado de máquina. No âmbito de negócios, o objetivo é melhorar a satisfação do usuário e fomentar o engajamento, enquanto, do ponto de vista da ciência de dados, buscaremos criar modelos preditivos adaptáveis às preferências do usuário. A interatividade com o usuário incluirá perguntas personalizadas para entender suas escolhas. O sucesso do projeto será medido pela precisão das recomendações, pelo aprendizado contínuo do sistema e pela melhoria geral da experiência do usuário na descoberta de filmes.
